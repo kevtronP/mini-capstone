@@ -35,6 +35,8 @@ elsif input_option == "3"
 elsif input_option == "4"
   print "Enter a product id: "
   product_id = gets.chomp
+  response = Unirest.get("http://localhost:3000/v1/products/#{product_id}")
+  product = response.body
   params = {}
   print "Name: (#{product["input_name"]})"
   params["input_name"] = gets.chomp

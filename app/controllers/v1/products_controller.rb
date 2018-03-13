@@ -24,10 +24,10 @@ class V1::ProductsController < ApplicationController
   def update
     product_id = params["id"]
     product = Store.find_by(id: product_id)
-    product.name = params["input_name"] || recipe.name
-    product.price = params["input_price"] || recipe.price
-    product.image_url = params["input_image_url"] || recipe.image_url
-    product.description = params["input_description"] || recipe.description
+    product.name = params["input_name"] || product.name
+    product.price = params["input_price"] || product.price
+    product.image_url = params["input_image_url"] || product.image_url
+    product.description = params["input_description"] || product.description
     product.save
     render json: product.as_json
   end
