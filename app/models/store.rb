@@ -1,10 +1,11 @@
 class Store < ApplicationRecord
 
+  validates :name, presence: true, uniqueness: true
+  validates :price, presence: true, numericality: { greater_than: 0 }
+  validates :description, length: { in: 10..500 }
+
   def is_discounted
-    if price < 2
-      p true
-    else p false
-    end
+    price <= 2
   end
 
   def tax
