@@ -18,6 +18,7 @@ class Store < ApplicationRecord
 
   def as_json
     {
+    id: id,
     name: name,
     price: price,
     tax: tax,

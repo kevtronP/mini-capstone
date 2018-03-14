@@ -9,16 +9,19 @@ puts "[4] Update a product"
 puts "[5] Delete a product"
 
 input_option = gets.chomp
+
 if input_option == "1"
   response = Unirest.get("http://localhost:3000/v1/products")
   products = response.body
   puts JSON.pretty_generate(products)
+
 elsif input_option == "2"
   print "Enter a product id: "
   product_id = gets.chomp
   response = Unirest.get("http://localhost:3000/v1/products/#{product_id}")
   product = response.body
   puts JSON.pretty_generate(product)
+
 elsif input_option == "3"
   params ={}
   print "Name: "
@@ -38,19 +41,20 @@ elsif input_option == "3"
     puts "Here is your product info"
     puts JSON.pretty_generate(product)
   end
+
 elsif input_option == "4"
   print "Enter a product id: "
   product_id = gets.chomp
   response = Unirest.get("http://localhost:3000/v1/products/#{product_id}")
   product = response.body
   params = {}
-  print "Name: (#{product["input_name"]})"
+  print "Name (#{product["name"]}): "
   params["input_name"] = gets.chomp
-  print "Price: (#{product["input_price"]})"
+  print "Price (#{product["price"]}): "
   params["input_price"] = gets.chomp
-  print "Image URL: (#{product["input_image_url"]})"
+  print "Image URL (#{product["image_url"]}): "
   params["input_image_url"] = gets.chomp
-  print "Description: (#{product["input_description"]})"
+  print "Description (#{product["description"]}): "
   params["input_description"] = gets.chomp
   params.delete_if { |_key, value| value.empty? }
   response = Unirest.patch("http://localhost:3000/v1/products/#{product_id}", parameters: params)
@@ -62,6 +66,7 @@ elsif input_option == "4"
     puts "Here is your product info"
     puts JSON.pretty_generate(product)
   end
+  
 elsif input_option == "5"
   print "Enter a product id:"
   product_id = gets.chomp
