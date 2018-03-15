@@ -1,6 +1,20 @@
 class V1::ProductsController < ApplicationController
+
   def index
     products = Store.all
+
+    search_terms = params[:q]
+    if search_terms
+      products = products.where("name ILIKE ?", "%#{search_terms}%")
+    end
+
+    sort_products_by_price = params[:sort_by_price]
+    if sort_products_by_price
+      products = products.order(price: :asc)
+    else
+      products = products.order(id: :asc)
+    end
+
     render json: products.as_json
   end
 

@@ -3,6 +3,7 @@ require "unirest"
 system "clear"
 puts "Welcome to Store app! Choose an option:"
 puts "[1] See all products"
+puts "  [1b] Search by product name (pineapple)"
 puts "[2] See one product"
 puts "[3] Add a Product"
 puts "[4] Update a product"
@@ -12,6 +13,16 @@ input_option = gets.chomp
 
 if input_option == "1"
   response = Unirest.get("http://localhost:3000/v1/products")
+  products = response.body
+  puts JSON.pretty_generate(products)
+
+elsif input_option == "1b"
+  response = Unirest.get("http://localhost:3000/v1/products?q=pineapple")
+  products = response.body
+  puts JSON.pretty_generate(products)
+
+elsif input_option == "1c"
+  response = Unirest.get("http://localhost:3000/v1/products?sort_by_price=true")
   products = response.body
   puts JSON.pretty_generate(products)
 
