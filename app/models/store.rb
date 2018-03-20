@@ -4,13 +4,13 @@ class Store < ApplicationRecord
   validates :price, presence: true, numericality: { greater_than: 0 }
   validates :description, length: { in: 10..500 }
 
-  def supplier
-    Supplier.find_by(id: supplier_id)
-  end
+  # a product belongs to a supplier
+  belongs_to :supplier
+  # def supplier
+  #   Supplier.find_by(id: supplier_id)
+  # end
 
-  def images
-    Image.where(product_id: id)
-  end
+  has_many :images
 
   def is_discounted
     price <= 2

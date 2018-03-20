@@ -1,7 +1,10 @@
 class Supplier < ApplicationRecord
-  def products
-    Product.where(supplier_id: id)
-  end
+
+  # a supplier has many products
+  has_many :products
+  # def products
+  #  Product.where(supplier_id: id)
+  # end
 
   def as_json
     {

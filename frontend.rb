@@ -8,6 +8,7 @@ puts "[2] See one product"
 puts "[3] Add a Product"
 puts "[4] Update a product"
 puts "[5] Delete a product"
+puts "[6] Create a new account"
 
 input_option = gets.chomp
 
@@ -83,4 +84,23 @@ elsif input_option == "5"
   product_id = gets.chomp
   response = Unirest.delete("http://localhost:3000/v1/products/#{product_id}")
   puts "Product successfully deleted"
+
+elsif input_option == "6"
+  params = {}
+  print "Enter your name: "
+  params[:name] = gets.chomp
+  print "Enter your email: "
+  params[:email] = gets.chomp
+  print "Enter your password: "
+  params[:password] = gets.chomp
+  print "Please confirm your password: "
+  params[:password_confirmation] = gets.chomp
+  response = Unirest.post("http://localhost:3000/v1/users/", parameters: params)
+  user = response.body
+  if user["errors"]
+    puts "Uh Oh! Something went wrong..."
+    p user["errors"]
+  else
+    puts "Account successfully created!"
+  end
 end
