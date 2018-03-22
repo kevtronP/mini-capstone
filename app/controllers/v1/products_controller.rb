@@ -1,15 +1,16 @@
 class V1::ProductsController < ApplicationController
+  before_action :authenticate_admin, except:[:index, :show]
 
   def index
-    products = Store.all
+    products = Product.all
 
     search_terms = params[:q]
     if search_terms
       products = products.where("name ILIKE ?", "%#{search_terms}%")
     end
 
-    sort_products_by_price = params[:sort_by_price]
-    if sort_products_by_price
+    i_should_sort_by_price = params[:sort_by_price]
+    if i_should_sort_by_price
       products = products.order(price: :asc)
     else
       products = products.order(id: :asc)
@@ -18,41 +19,42 @@ class V1::ProductsController < ApplicationController
     render json: products.as_json
   end
 
-  def show
-    product_id = params["id"]
-    product = Store.find_by(id: product_id)
-    render json: product.as_json
-  end
-
   def create
-    product = Store.new(
-      name: params["input_name"],
-      price: params["input_price"],
-      description: params["input_description"]
+    if current_user && current_user.admin
+      product = Product.new(
+        name: params[:name],
+        price: params[:price],
+        description: params[:description],
+        supplier_id: 1
       )
-    if product.save
-      render json: product.as_json
-    else render json: {errors: product.errors.full_messages}, status: :unprocessable_entity
+      if product.save
+        render json: product.as_json
+      else
+        render json: {}, status: :unauthorized
+      end
     end
   end
 
+  def show
+    product = Product.find_by(id: params[:id])
+    render json: product.as_json
+  end
+
   def update
-    product_id = params["id"]
-    product = Store.find_by(id: product_id)
-    product.name = params["input_name"] || product.name
-    product.price = params["input_price"] || product.price
-    # product.image_url = params["input_image_url"] || product.image_url
-    product.description = params["input_description"] || product.description
+    product = Product.find_by(id: params[:id])
+    product.name = params[:name] || product.name
+    product.price = params[:price] || product.price
+    product.description = params[:description] || product.description
     if product.save
       render json: product.as_json
-    else render json: {errors: product.errors.full_messages}, status: :unprocessable_entity
+    else
+      render json: {}, status: :unauthorized
     end
   end
 
   def destroy
-    product_id = params["id"]
-    product = Store.find_by(id: product_id)
+    product = Product.find_by(id: params[:id])
     product.destroy
-    render json: product.as_json
+    render json: {message: "Product successfully destroyed!"}
   end
 end

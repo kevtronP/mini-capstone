@@ -1,6 +1,27 @@
 require "unirest"
 
+print "Please enter your login email: "
+input_email = gets.chomp
+print "Please enter your password: "
+input_password = gets.chomp
+
+response = Unirest.post(
+  "http://localhost:3000/user_token",
+  parameters: {
+    auth: {
+      email: "#{input_email}",
+      password: "#{input_password}"
+    }
+  }
+)
+
+# Save the JSON web token from the response
+jwt = response.body["jwt"]
+# Include the jwt in the headers of any future web requests
+Unirest.default_header("Authorization", "Bearer #{jwt}")
+
 system "clear"
+puts "Here is your jwt #{jwt}"
 puts "Welcome to Store app! Choose an option:"
 puts "[1] See all products"
 puts "  [1b] Search by product name (pineapple)"
@@ -8,7 +29,8 @@ puts "[2] See one product"
 puts "[3] Add a Product"
 puts "[4] Update a product"
 puts "[5] Delete a product"
-puts "[6] Create a new account"
+puts "[6] Create an Order"
+puts "[7] Create a new account"
 
 input_option = gets.chomp
 
@@ -37,13 +59,11 @@ elsif input_option == "2"
 elsif input_option == "3"
   params ={}
   print "Name: "
-  params["input_name"] = gets.chomp
+  params[:name] = gets.chomp
   print "Price: "
-  params["input_price"] = gets.chomp
-  # print "Image URL: "
-  # params["input_image_url"] = gets.chomp
+  params[:price] = gets.chomp
   print "Description: "
-  params["input_description"] = gets.chomp
+  params[:description] = gets.chomp
   response = Unirest.post("http://localhost:3000/v1/products", parameters: params)
   product = response.body
   if product["errors"]
@@ -61,13 +81,11 @@ elsif input_option == "4"
   product = response.body
   params = {}
   print "Name (#{product["name"]}): "
-  params["input_name"] = gets.chomp
+  params[:name] = gets.chomp
   print "Price (#{product["price"]}): "
-  params["input_price"] = gets.chomp
-  # print "Image URL (#{product["image_url"]}): "
-  # params["input_image_url"] = gets.chomp
+  params[:price] = gets.chomp
   print "Description (#{product["description"]}): "
-  params["input_description"] = gets.chomp
+  params[:description] = gets.chomp
   params.delete_if { |_key, value| value.empty? }
   response = Unirest.patch("http://localhost:3000/v1/products/#{product_id}", parameters: params)
   product = response.body
@@ -86,6 +104,16 @@ elsif input_option == "5"
   puts "Product successfully deleted"
 
 elsif input_option == "6"
+  params = {}
+  print "Enter a product id: "
+  params[:product_id] = gets.chomp
+  print "Enter a quantity: "
+  params[:quantity] = gets.chomp
+  response = Unirest.post("http://localhost:3000/v1/orders/", parameters: params)
+  order = response.body
+  puts JSON.pretty_generate(order)
+
+elsif input_option == "7"
   params = {}
   print "Enter your name: "
   params[:name] = gets.chomp
