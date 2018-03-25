@@ -152,4 +152,11 @@ elsif input_option == "10"
   response = Unirest.get("http://localhost:3000/v1/carted_products")
   carted_products = response.body
   puts JSON.pretty_generate(carted_products)
+
+elsif input_option == "11"
+  print "Enter product id to remove: "
+  input_carted_product_id = gets.chomp
+  response = Unirest.delete("http://localhost:3000/v1/carted_products/#{input_carted_product_id}")
+  message = response.body
+  puts JSON.pretty_generate(message)
 end
