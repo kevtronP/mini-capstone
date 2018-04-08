@@ -50,8 +50,8 @@ class Product < ApplicationRecord
       total: total,
       is_discounted: is_discounted,
       supplier: supplier.as_json,
-      images: images.as_json,
-      categories: categories.map{ |category| category.name }
+      # images: images.as_json,
+      # categories: categories.map{ |category| category.name }
     }
   end
 end

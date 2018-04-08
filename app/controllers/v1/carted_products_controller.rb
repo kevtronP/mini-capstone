@@ -28,5 +28,4 @@ class V1::CartedProductsController < ApplicationController
     carted_product.save
     render json: {status: "Carted product successfully removed!"}
   end
-  
 end
